@@ -3,6 +3,7 @@ import passport from 'passport';
 import session from 'express-session';
 import dotenv from 'dotenv';
 import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
+import { readData, writeData } from './cosmosHelper.js';
 
 dotenv.config();
 
@@ -51,6 +52,16 @@ app.get('/auth/google/callback', passport.authenticate('google', {
 
 app.get('/hello', (req, res) => {
   res.send('hello');
+});
+
+// Test route for Cosmos DB
+app.get('/test-cosmos', async (req, res) => {
+  try {
+    const data = await readData('test-id');
+    res.json(data);
+  } catch (error) {
+    res.status(500).send('Error reading data');
+  }
 });
 
 app.listen(port, () => {
